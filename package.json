@@ -1,0 +1,37 @@
+{
+  "name": "generator-bord4",
+  "version": "0.4.4",
+  "description": "Bord4's app generator.",
+  "license": "MIT",
+  "main": "app/index.js",
+  "repository": "bergenstidende/generator-bord4",
+  "author": {
+    "name": "Lasse Lambrechts",
+    "email": "lasse.lambrechts@bt.no",
+    "url": "https://github.com/bergenstidende"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "files": [
+    "app"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "dependencies": {
+    "async": "~0.2.9",
+    "chalk": "*",
+    "filendir": "*",
+    "fs-extra": "^0.18.2",
+    "lodash": "*",
+    "mkdirp": "*",
+    "nodegit": "latest",
+    "promisify-node": "^0.1.5",
+    "yeoman-generator": "~0.18.0",
+    "yosay": "latest"
+  },
+  "peerDependencies": {
+    "yo": ">=1.0.0"
+  }
+}
