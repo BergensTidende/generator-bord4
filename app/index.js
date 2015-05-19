@@ -291,6 +291,8 @@ var Bord4Generator = yeoman.generators.Base.extend({
                                     }.bind(this));
                             }.bind(this));
                     }.bind(this));
+            } else {
+                done();
             }
         },
         runFullApp: function() {
