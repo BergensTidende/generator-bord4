@@ -16,45 +16,47 @@ Generator-bord4 er en yeoman generator for å sette opp grunnmuren til nye apper
 * [nodejs] - Nodejs må være innstalert
 * [yeoman] - Yeoman må være installert ```npm install -g yo ```
 * [Github ssh] - Maskinen din må være autentisert hos Github.
+* Den trenger tre repository:
+    - [App-template]: For store selvstendige apper. (Kan bruke bord4s app-template, les dokumentasjonen før bruk)
+    - [Daily-template]: For små hverdagsapper som inkluderes som iframe. (Kan bruke bord4s daily template, les dokumentasjonen før bruk)
+    - Daily-storage: Arkiv for hverdagsapper. (Må opprettes selv. Generatoren forutsetter at den finnes en projects mappe på roten.)
 
 ## Installere generatoren
 Klon [generator-bord4] til maskinen din, enten ved hjelp av et GUI eller via terminal
-
 ```bash
 git clone git@github.com:BergensTidende/generator-bord4.git
 ```
 
-Fyr opp en terminal, cd deg inn generator-katalogen.
+Start et terminalvindu, cd deg inn generator-katalogen.
 ```bash
 cd /path/to/generator-bord4
 ```
+
 Innstaller nødvendige node moduler
 ```bash
 npm install
 ```
-Link generatoren opp slik at den kan brukes.
 
+Link generatoren opp slik at den kan brukes.
 ```bash
 npm link
 ```
 
+Skift katalog til den du ønsker å bruke som rot for prosjektene dine
+```bash
+cd /path/to/prosjektkatalog
+```
+
+Første gang du skal bruke generatoren må du sette opp variabler og klone nødvendige repository
+```bash
+yo bord4:setup
+```
 ## Bruke generatoren
 ### Main
-Lag en folder hvor appen din skal bo, cd inn i den
 
-```bash
-mkdir folder_til_app && cd $_
-```
-Kjør generatoren
-
+Kjør generatoren fra rotkatalogen til generatorprosjektene dine
 ```bash
 yo bord4
-```
-### Conf
-Conf lager dev.json i config/enviroments
-
-```bash
-yo bord4:conf
 ```
 
 ## Oppdatere generatoren
@@ -62,20 +64,22 @@ Sync repoet og kjør ```npm install ```
 
 ## Dette gjør generatoren
 
-* Først sjekker den om den kjøres fra apps/workspace. Da vil den feile
-* Vil og feile om den finner en Gruntfile.js i katalogen den kjøres fra
-* Den trenger Github tilgang, sjekker om passordet er korrekt
-* Den har en lokal kopi av app templaten. Er den foreldet oppdateres den
-* Den kjenner igjen daily graphics folderen og velger automatisk minitemplate og fjerner valget om å lage repo
-* Hvis ikke daily graphics får du velge mini eller mega app
-* Velger du mini app må du velge template. Mega har bare en.
-* Så kopierer den først inn app-katalogen fra app template
-* Så vanilla
-* Om det er valgt å bruke en annen template enn vanilla kopieres denne nå inn
-* bower-filen bygges
-* git repo lages og det pushes til github om det er valgt
-* så npm og bower install
-* til slutt grunt copy:cssAsScss og grunt serve
+* Først sjekker den om den kjøres fra prosjektkatalogen som ble oppgitt under setup. Hvis ikke feiler den.
+* For å være sikker dobbelsjekker den om den finner en Gruntfile.js i katalogen den kjøres fra. Det vil bety at den kjøres fra katalog hvor det allerede bor en app. Generatoren vil da avslutte.
+* Sjekker om alle nødvendige variabler er satt. Feiler hvis ikke.
+* Sjekker om den har nødvendige repoer. Feiler hvis ikke.
+* Om alt er på plass oppdaterer den de tre repoene den trenger.
+* Først får du valget om hvilken type app du vil lage: Fullt rigg eller Daily Graphic
+* Er det Daily graphic ber den deg velge hvilken undertype du ønsker
+* Så spør generator etter navn. Finner den at navnet allerede er i brukt vil den be deg om velge et anent navn.
+* Den oppretter så appens mappe. For Daily Graphics plasseres appen i PROSJEKTMAPPE/daily-graphics-storage/projects/ÅR/MND/NAVN. Fullt rigg plasseres i PROSJEKTMAPPE/NAVN
+* Flytter seg inn i appens katalog
+* Kopierer så de nødvendige filene fra apptypens repository.
+* Kjører npm install
+* Om det er Daily Graphics kjører den ```bash grunt workon:[map|graphic|vanilla]```
+* Kjører bower install
+* Oppretter project.json som inneholder informasjon om appen
+* Avslutter med grunt:serve
 
 ## Kjente feil
 ### npm vil bare kjøre som sudo
@@ -83,14 +87,16 @@ Sync repoet og kjør ```npm install ```
 sudo chown -R `whoami` ~/.npm
 sudo chown -R `whoami` /usr/local
 ```
-### Generatoren finner ikke app-template
-Om man sletter app-template folderen under generator-bord4 ved en inkurie vil generatoren feile.
-Men det finnes håp. I generatoren ligger en fil som heter .bord4config. Dette er en json-fil som holder orden på enkle settings. Parameteret "appTemplate" holder orden på hvilken versjon av app-templaten generatoren har. Slett denne og generatoren vil laste ned app-template på nytt.
 
-### generatoren kræsjer
-Kjeft på Lasse
+###grunt feiler under bygging pga css filer
+En del bower komponenter kommer ikke med scss-filer. Det kan føre til at grunt feiler under bygging. Skjer dette kan du kjøre ```bash grunt copy:cssAsScss``` for å gjøre css-filene om til Scss.
+
+### generatoren kræsjer og det finnes ikke håp
+Opprett issue eller send epost til utvikling@bt.no
 
 [nodejs]: http://nodejs.org
 [yeoman]: http://yeoman.io
+[App-template]: https://github.com/BergensTidende/bord4-app-template
+[Daily-template]: https://github.com/BergensTidende/bord4-daily-template
 [Github ssh]: https://help.github.com/articles/generating-ssh-keys
 [generator-bord4]: https://github.com/BergensTidende/generator-bord4/
