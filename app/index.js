@@ -10,7 +10,6 @@ var console = require('console');
 var _ = require('lodash');
 
 /* Variables */
-var sourceFolder = ''; // path.join(destinationFolder, '../../' is boring to write over and over again
 var generatorSettings = ['githubUser', 'appTemplateRepo', 'dailyTemplateRepo', 'dailyStorageRepo', 'folderAppTemplate', 'folderDailyTemplate', 'folderDailyGraphics', 'repository'];
 
 var allSystemsNoes = function(logmessage) {
@@ -47,10 +46,14 @@ var Bord4Generator = yeoman.generators.Base.extend({
 
         var done = this.async();
         var allSystemsGo = true;
+        if (this.fs.exists(this.destinationPath('Gruntfile.js'))) {
+            allSystemsGo = false;
+            allSystemsNoes('Du er inne i mappen til eksisterende app. Vennligst prøv på nytt fra rotkatalogen til generator-prosjektene dine.');
+        }
         _.forEach(generatorSettings, function(val) {
             if (this.config.get(val) === undefined) {
                 allSystemsGo = false;
-                this.log(chalk.red('X Finner ikke variabelen ' + val));
+                this.log(chalk.red('✗ Finner ikke variabelen ' + val));
             }
         }.bind(this));
 
@@ -61,22 +64,22 @@ var Bord4Generator = yeoman.generators.Base.extend({
         this.log(chalk.green('✓ Nødvendige variabler er satt'));
 
         try {
-            fs.statSync(path.join(this.destinationRoot(), '/' + this.config.get('folderAppTemplate')));
+            fs.statSync(this.destinationPath(this.config.get('folderAppTemplate')));
         } catch (error) {
             allSystemsGo = false;
-            this.log(chalk.red('X Finner ikke katalogen for folderAppTemplate. Skulle vært her: ' + this.config.get('folderAppTemplate')));
+            this.log(chalk.red('✗ Finner ikke katalogen for folderAppTemplate. Skulle vært her: ' + this.config.get('folderAppTemplate')));
         }
         try {
-            fs.statSync(path.join(this.destinationRoot(), '/' + this.config.get('folderDailyTemplate')));
+            fs.statSync(this.destinationPath(this.config.get('folderDailyTemplate')));
         } catch (error) {
             allSystemsGo = false;
-            this.log(chalk.red('X Finner ikke katalogen for folderDailyTemplate. Skulle vært her: ' + this.config.get('folderDailyTemplate')));
+            this.log(chalk.red('✗ Finner ikke katalogen for folderDailyTemplate. Skulle vært her: ' + this.config.get('folderDailyTemplate')));
         }
         try {
-            fs.statSync(path.join(this.destinationRoot(), '/' + this.config.get('folderDailyGraphics')));
+            fs.statSync(this.destinationPath(this.config.get('folderDailyGraphics')));
         } catch (error) {
             allSystemsGo = false;
-            this.log(chalk.red('X Finner ikke katalogen for folderDailyGraphics. Skulle vært her: ' + this.config.get('folderDailyGraphics')));
+            this.log(chalk.red('✗ Finner ikke katalogen for folderDailyGraphics. Skulle vært her: ' + this.config.get('folderDailyGraphics')));
         }
 
         if (!allSystemsGo) {
@@ -90,7 +93,6 @@ var Bord4Generator = yeoman.generators.Base.extend({
         nodegit.Repository.open(this.config.get('folderAppTemplate'))
             .then(function(repo) {
                 repository = repo;
-
                 return repository.fetchAll({
                     certificateCheck: function() {
                         return 1;
@@ -107,7 +109,6 @@ var Bord4Generator = yeoman.generators.Base.extend({
                 nodegit.Repository.open(this.config.get('folderDailyTemplate'))
                     .then(function(repo) {
                         repository = repo;
-
                         return repository.fetchAll({
                             certificateCheck: function() {
                                 return 1;
@@ -124,7 +125,6 @@ var Bord4Generator = yeoman.generators.Base.extend({
                         nodegit.Repository.open(this.config.get('folderDailyGraphics'))
                             .then(function(repo) {
                                 repository = repo;
-
                                 return repository.fetchAll({
                                     certificateCheck: function() {
                                         return 1;
@@ -142,7 +142,7 @@ var Bord4Generator = yeoman.generators.Base.extend({
                             .done(function() {
                                 this.log(chalk.green('✓ Oppdatert ' + this.config.get('folderDailyGraphics')));
                                 this.log();
-                                this.log(yosay(chalk.yellow('Jeg har det jeg trenger, la oss bygge en app sammen.')));
+                                this.log(yosay(chalk.yellow('Jeg har det jeg trenger, la oss bygge en app sammen. ☂ ')));
                                 this.log();
                                 done();
                             }.bind(this));
@@ -219,7 +219,7 @@ var Bord4Generator = yeoman.generators.Base.extend({
                         m = '0' + m;
                     }
                     appFolder = path.join(this.destinationRoot(), this.config.get('folderDailyGraphics'), '/projects/' + y + '/' + m + '/', this.appName);
-                    serverFolder = 'daily-graphics/' + +y + '/' + m + '/' + this.appName;
+                    serverFolder = 'daily-graphics/' + y + '/' + m + '/' + this.appName;
                 }
                 try {
                     fs.statSync(appFolder);
@@ -227,7 +227,7 @@ var Bord4Generator = yeoman.generators.Base.extend({
                     nameTaken = false;
                 }
                 if (nameTaken) {
-                    this.log(chalk.red('Navnet er dessverre allerde tatt, du må finne på et nytt navn.'));
+                    this.log(chalk.red('✗ Navnet er dessverre allerde tatt, du må finne på et nytt navn.'));
                     return this.prompting.askForAppName.call(this);
                 }
                 this.appFolder = appFolder;
@@ -239,7 +239,7 @@ var Bord4Generator = yeoman.generators.Base.extend({
     writing: function() {
         var done = this.async();
         // Create folder for project
-        this.log(chalk.yellow('Oppretter mappen ' + this.appFolder));
+        this.log(chalk.yellow('☂ Oppretter mappen ' + this.appFolder));
         filendir.mkdirp(this.appFolder);
         if (this.appType === 'standalone') {
             this.sourceRoot(path.join(this.destinationRoot(), this.config.get('folderAppTemplate')));
@@ -264,7 +264,7 @@ var Bord4Generator = yeoman.generators.Base.extend({
                 }
             }
         }
-        this.log(yosay(chalk.yellow('De rette filene er på de rette stedene. Klar til magi.')));
+        this.log(yosay(chalk.yellow('☂ De rette filene er på de rette stedene. Jeg er klar til å gjøre magi.')));
         done();
     },
     install: {
@@ -312,7 +312,7 @@ var Bord4Generator = yeoman.generators.Base.extend({
             };
             fs.writeFile(this.destinationPath('project.json'), JSON.stringify(projectJson, null, 4), function(err) {
                 if (err) {
-                    console.log(err);
+                    this.log(chalk.red('✗ ' + err));
                 } else {
                     this.log(chalk.green('✓ Opprettet project.json'));
                 }
