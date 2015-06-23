@@ -27,6 +27,7 @@
     "lodash": "*",
     "mkdirp": "*",
     "nodegit": "latest",
+    "nodegit-promise": "^2.0.1",
     "promisify-node": "^0.1.5",
     "yeoman-generator": "~0.18.0",
     "yosay": "latest"
