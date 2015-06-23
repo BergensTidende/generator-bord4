@@ -122,7 +122,8 @@ var Bord4Generator = yeoman.generators.Base.extend({
                     })
                     .done(function() {
                         this.log(chalk.green('✓ Oppdatert ' + this.config.get('folderDailyTemplate')));
-                        nodegit.Repository.open(this.config.get('folderDailyGraphics'))
+                        done();
+                        /*nodegit.Repository.open(this.config.get('folderDailyGraphics'))
                             .then(function(repo) {
                                 repository = repo;
                                 return repository.fetchAll({
@@ -130,6 +131,7 @@ var Bord4Generator = yeoman.generators.Base.extend({
                                         return 1;
                                     },
                                     credentials: function(url, userName) {
+                                        console.log(userName)
                                         return nodegit.Cred.sshKeyFromAgent(userName);
                                     }
                                 });
@@ -146,6 +148,7 @@ var Bord4Generator = yeoman.generators.Base.extend({
                                 this.log();
                                 done();
                             }.bind(this));
+*/
                     }.bind(this));
             }.bind(this));
     },
