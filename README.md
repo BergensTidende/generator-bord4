@@ -14,7 +14,7 @@ Generator-bord4 er en yeoman generator for å sette opp grunnmuren til nye apper
 
 ## Hva må på plass for å bruke den?
 * [nodejs] - Nodejs må være installert
-* [yeoman] - Yeoman må være installlert ```npm install -g yo ```
+* [yeoman] - Yeoman må være installert ```npm install -g yo ```
 * [Github ssh] - Maskinen din må være autentisert hos Github.
 * Den trenger tre repository:
     - [App-template]: For store selvstendige apper. (Kan bruke bord4s app-template, les dokumentasjonen før bruk)
