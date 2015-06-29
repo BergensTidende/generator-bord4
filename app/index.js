@@ -184,6 +184,9 @@ var Bord4Generator = yeoman.generators.Base.extend({
                 }, {
                     value: 'graphic',
                     name: 'Grafikk'
+                }, {
+                    value: 'personlist',
+                    name: 'List over personer (gruppert)'
                 }],
                 default: 'vanilla'
             }];
